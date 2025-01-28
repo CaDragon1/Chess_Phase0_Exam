@@ -1,6 +1,6 @@
 package chess;
 
-import chess.piecemoves.PieceMoves;
+import chess.piecemoves.*;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,6 +16,7 @@ public class ChessPiece {
 
     private ChessGame.TeamColor pieceColor;
     private PieceType type;
+    private PieceMoves selectedPiece;
     private HashSet<PieceMoves> moveList;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
@@ -57,7 +58,33 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        return switch (board.getPiece(myPosition).getPieceType()) {
+            case ROOK -> {
+                selectedPiece = new RookMoves(board, myPosition);
+                yield selectedPiece.getMoveList();
+            }
+            case BISHOP -> {
+                selectedPiece = new BishopMoves(board, myPosition);
+                yield selectedPiece.getMoveList();
+            }
+            case QUEEN -> {
+                selectedPiece = new QueenMoves(board, myPosition);
+                yield selectedPiece.getMoveList();
+            }
+            case KNIGHT -> {
+                selectedPiece = new KnightMoves(board, myPosition);
+                yield selectedPiece.getMoveList();
+            }
+            case KING -> {
+                selectedPiece = new KingMoves(board, myPosition);
+                yield selectedPiece.getMoveList();
+            }
+            case PAWN -> {
+                selectedPiece = new PawnMoves(board, myPosition);
+                yield selectedPiece.getMoveList();
+            }
+            case null, default -> null;
+        };
     }
 
     @Override
